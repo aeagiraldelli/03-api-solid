@@ -51,3 +51,23 @@ docker stop <image-name>
 ```shell
 docker ps -a
 ```
+
+### Run docker compose
+
+Run commands from `docker-compose.yml`.
+
+```sh
+docker compose up -d
+```
+
+### Stop docker compose
+
+```sh
+docker compose stop
+```
+
+### Remove docker compose running
+
+```sh
+docker compose down
+```
