@@ -25,3 +25,29 @@ npx prisma init
 ```shell
 npx prisma generate
 ```
+
+## Docker
+
+### Create docker image
+
+```shell
+docker run --name <image-name> -e POSTGRESQL_USERNAME=<db-user> -e POSTGRESQL_PASSWORD=<db-password> -e POSTGRESQL_DATABASE=<db-name> -p 5432:5432 bitnami/postgresql
+```
+
+### Start image
+
+```shell
+docker start <image-name>
+```
+
+### Stop image
+
+```shell
+docker stop <image-name>
+```
+
+### Check created images
+
+```shell
+docker ps -a
+```
