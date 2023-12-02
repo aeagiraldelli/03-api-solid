@@ -1,6 +1,7 @@
 import { hash } from 'bcryptjs';
 
 import { UsersRepository } from '@/repositories/users-repository';
+import { EmailRegisteredError } from './errors/email-registered-error';
 
 interface RegisterUserUseCaseProps {
   name: string;
@@ -16,7 +17,7 @@ export class RegisterUseCase {
     const registeredUser = await this.userRepository.findByEmail(email);
 
     if (registeredUser) {
-      throw new Error('E-mail already used.');
+      throw new EmailRegisteredError();
     }
 
     const password_hash = await hash(password, 6);

@@ -3,6 +3,7 @@ import { z } from 'zod';
 
 import { RegisterUseCase } from '@/use-case/register.use-case';
 import { PrismaUserRepository } from '@/repositories/prisma/prisma-users-repository';
+import { EmailRegisteredError } from '@/use-case/errors/email-registered-error';
 
 export async function register(request: FastifyRequest, reply: FastifyReply) {
   const bodySchema = z.object({
@@ -19,6 +20,10 @@ export async function register(request: FastifyRequest, reply: FastifyReply) {
     await registerUserUseCase.exec({ name, email, password });
     return reply.status(201).send();
   } catch (err) {
-    return reply.status(409).send();
+    if (err instanceof EmailRegisteredError) {
+      return reply.status(409).send({ error: err.message });
+    }
+
+    throw err;
   }
 }
