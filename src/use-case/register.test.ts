@@ -45,6 +45,6 @@ describe('Register use case', () => {
 
     await registerUseCase.exec(user);
 
-    expect(() => registerUseCase.exec(user)).rejects.toBeInstanceOf(EmailRegisteredError);
+    await expect(() => registerUseCase.exec(user)).rejects.toBeInstanceOf(EmailRegisteredError);
   });
 });
