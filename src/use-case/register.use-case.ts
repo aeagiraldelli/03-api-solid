@@ -2,6 +2,7 @@ import { hash } from 'bcryptjs';
 
 import { UsersRepository } from '@/repositories/users-repository';
 import { EmailRegisteredError } from './errors/email-registered-error';
+import { User } from '@prisma/client';
 
 interface RegisterUserUseCaseProps {
   name: string;
@@ -9,10 +10,14 @@ interface RegisterUserUseCaseProps {
   password: string;
 }
 
+interface RegisterUseCaseResponse {
+  user: User
+}
+
 export class RegisterUseCase {
   constructor(private userRepository: UsersRepository) { }
-  async exec(user: RegisterUserUseCaseProps) {
-    const { name, email, password } = user;
+  async exec(props: RegisterUserUseCaseProps): Promise<RegisterUseCaseResponse> {
+    const { name, email, password } = props;
 
     const registeredUser = await this.userRepository.findByEmail(email);
 
@@ -22,6 +27,8 @@ export class RegisterUseCase {
 
     const password_hash = await hash(password, 6);
 
-    await this.userRepository.create({ name, email, password_hash });
+    const user = await this.userRepository.create({ name, email, password_hash });
+
+    return { user };
   }
 }
