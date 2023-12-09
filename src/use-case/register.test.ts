@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { RegisterUseCase } from './register.use-case';
+import { RegisterUseCase } from './register';
 import { compare } from 'bcryptjs';
 import { InMemoryUserRepository } from '@/repositories/in-memory/in-memory-user-repository';
 import { EmailRegisteredError } from './errors/email-registered-error';
