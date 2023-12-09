@@ -1,15 +1,22 @@
-import { describe, expect, it } from 'vitest';
+import { beforeEach, describe, expect, it } from 'vitest';
 import { RegisterUseCase } from './register';
 import { compare } from 'bcryptjs';
 import { InMemoryUserRepository } from '@/repositories/in-memory/in-memory-user-repository';
 import { EmailRegisteredError } from './errors/email-registered-error';
 
-describe('Register use case', () => {
-  it('should be able to register', async () => {
-    const userRepo = new InMemoryUserRepository();
-    const registerUseCase = new RegisterUseCase(userRepo);
+let userRepo: InMemoryUserRepository;
+let sut: RegisterUseCase;
 
-    const { user } = await registerUseCase.exec({
+describe('Register use case', () => {
+
+  beforeEach(() => {
+    userRepo = new InMemoryUserRepository();
+    sut = new RegisterUseCase(userRepo);
+  });
+
+  it('should be able to register', async () => {
+
+    const { user } = await sut.exec({
       name: 'John Doe',
       email: 'johndoe@email.com',
       password: '123456'
@@ -19,10 +26,7 @@ describe('Register use case', () => {
   });
 
   it('should hash user password upon registration', async () => {
-    const userRepo = new InMemoryUserRepository();
-    const registerUseCase = new RegisterUseCase(userRepo);
-
-    const { user } = await registerUseCase.exec({
+    const { user } = await sut.exec({
       name: 'John Doe',
       email: 'johndoe@email.com',
       password: '123456'
@@ -34,17 +38,14 @@ describe('Register use case', () => {
   });
 
   it('should not be able to register with same email twice.', async () => {
-    const userRepo = new InMemoryUserRepository();
-    const registerUseCase = new RegisterUseCase(userRepo);
-
     const user = {
       name: 'John Doe',
       email: 'johndoe@email.com',
       password: '123456'
     };
 
-    await registerUseCase.exec(user);
+    await sut.exec(user);
 
-    await expect(() => registerUseCase.exec(user)).rejects.toBeInstanceOf(EmailRegisteredError);
+    await expect(() => sut.exec(user)).rejects.toBeInstanceOf(EmailRegisteredError);
   });
 });
