@@ -4,6 +4,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { InMemoryCheckInsRepository } from '@/repositories/in-memory';
 import { InMemoryGymsRepository } from '@/repositories/in-memory/in-memory-gyms-repository';
 import { Decimal } from '@prisma/client/runtime/library';
+import { CheckInError } from './errors';
 
 let checkInsRepository: CheckInsRepository;
 let gymsRepository: GymRepository;
@@ -57,7 +58,7 @@ describe('Check Ins Use Case', () => {
       userId: 'user-id',
       userLatitude: -23.5425341,
       userLongitude: -47.1558656,
-    })).rejects.toBeInstanceOf(Error);
+    })).rejects.toBeInstanceOf(CheckInError);
   });
 
   it('should be able to check in twice in different day', async () => {
@@ -97,6 +98,6 @@ describe('Check Ins Use Case', () => {
       userId: 'user-id',
       userLatitude: -23.5425341,
       userLongitude: -47.1558656,
-    })).rejects.toBeInstanceOf(Error);
+    })).rejects.toBeInstanceOf(CheckInError);
   });
 });
