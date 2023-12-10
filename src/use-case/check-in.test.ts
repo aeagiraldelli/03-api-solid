@@ -10,17 +10,17 @@ let gymsRepository: GymRepository;
 let sut: CheckInUseCase;
 
 describe('Check Ins Use Case', () => {
-  beforeEach(() => {
+  beforeEach(async () => {
     checkInsRepository = new InMemoryCheckInsRepository();
     gymsRepository = new InMemoryGymsRepository();
     sut = new CheckInUseCase(checkInsRepository, gymsRepository);
 
-    gymsRepository.create({
+    await gymsRepository.create({
       id: 'gym-01',
       name: 'Amazfit Academy',
       description: 'Amazfit',
-      latitude: new Decimal(0),
-      longitude: new Decimal(0),
+      latitude: new Decimal(-23.5425341),
+      longitude: new Decimal(-47.1558656),
       phone: '+55 11 11111-1111',
     });
 
@@ -35,8 +35,8 @@ describe('Check Ins Use Case', () => {
     const { checkIn } = await sut.exec({
       gymId: 'gym-01',
       userId: 'user-id',
-      userLatitude: 0,
-      userLongitude: 0,
+      userLatitude: -23.5425341,
+      userLongitude: -47.1558656,
     });
 
     expect(checkIn.id).toEqual(expect.any(String));
@@ -48,15 +48,15 @@ describe('Check Ins Use Case', () => {
     await sut.exec({
       gymId: 'gym-01',
       userId: 'user-id',
-      userLatitude: 0,
-      userLongitude: 0,
+      userLatitude: -23.5425341,
+      userLongitude: -47.1558656,
     });
 
     await expect(() => sut.exec({
       gymId: 'gym-01',
       userId: 'user-id',
-      userLatitude: 0,
-      userLongitude: 0,
+      userLatitude: -23.5425341,
+      userLongitude: -47.1558656,
     })).rejects.toBeInstanceOf(Error);
   });
 
@@ -66,8 +66,8 @@ describe('Check Ins Use Case', () => {
     await sut.exec({
       gymId: 'gym-01',
       userId: 'user-id',
-      userLatitude: 0,
-      userLongitude: 0,
+      userLatitude: -23.5425341,
+      userLongitude: -47.1558656,
     });
 
     vi.setSystemTime(new Date(2023, 12, 10, 8, 0, 0));
@@ -75,10 +75,28 @@ describe('Check Ins Use Case', () => {
     const { checkIn } = await sut.exec({
       gymId: 'gym-01',
       userId: 'user-id',
-      userLatitude: 0,
-      userLongitude: 0,
+      userLatitude: -23.5425341,
+      userLongitude: -47.1558656,
     });
 
     expect(checkIn.id).toEqual(expect.any(String));
+  });
+
+  it('should not be able to check in on distant gym', async () => {
+    gymsRepository.create({
+      id: 'gym-02',
+      name: 'Amazfit Academy',
+      description: 'Amazfit',
+      latitude: -23.5316749,
+      longitude: -46.8954553,
+      phone: '+55 11 11111-1111',
+    });
+
+    await expect(() => sut.exec({
+      gymId: 'gym-02',
+      userId: 'user-id',
+      userLatitude: -23.5425341,
+      userLongitude: -47.1558656,
+    })).rejects.toBeInstanceOf(Error);
   });
 });
