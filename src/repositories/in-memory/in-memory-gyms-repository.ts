@@ -32,4 +32,12 @@ export class InMemoryGymsRepository implements GymRepository {
 
     return gym;
   }
+
+  async findByName(name: string, page: number): Promise<Gym[]> {
+    const gyms = this.data.filter(el => {
+      return el.name.toLowerCase().includes(name.toLowerCase());
+    }).slice((page - 1) * 20, page * 20);
+
+    return gyms;
+  }
 }
