@@ -4,6 +4,7 @@ import { Gym, Prisma } from '@prisma/client';
 import { GymRepository } from '../gyms-repository';
 import { ResourceNotFoundError } from '@/use-case/errors';
 import { Decimal } from '@prisma/client/runtime/library';
+import { Coordinate, calculateDistance } from '@/utils';
 
 export class InMemoryGymsRepository implements GymRepository {
   private data: Gym[] = [];
@@ -37,6 +38,21 @@ export class InMemoryGymsRepository implements GymRepository {
     const gyms = this.data.filter(el => {
       return el.name.toLowerCase().includes(name.toLowerCase());
     }).slice((page - 1) * 20, page * 20);
+
+    return gyms;
+  }
+
+  async findManyNearby(params: Coordinate): Promise<Gym[]> {
+    const gyms = this.data.filter((item) => {
+      const distanceInKm = calculateDistance(
+        { latitude: params.latitude, longitude: params.longitude },
+        { latitude: item.latitude.toNumber(), longitude: item.longitude.toNumber() }
+      );
+
+      const MAX_DISTANCE_IN_KM = 10;
+
+      return distanceInKm < MAX_DISTANCE_IN_KM;
+    });
 
     return gyms;
   }

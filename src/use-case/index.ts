@@ -10,3 +10,5 @@ export * from './user-metrics';
 export * from './user-metrics.types';
 export * from './search-gym';
 export * from './search-gym.types';
+export * from './fetch-nearby-gyms';
+export * from './fetch-nearby-gyms.types';
