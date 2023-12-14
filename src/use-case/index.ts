@@ -12,3 +12,5 @@ export * from './search-gym';
 export * from './search-gym.types';
 export * from './fetch-nearby-gyms';
 export * from './fetch-nearby-gyms.types';
+export * from './validate-check-in';
+export * from './validate-check-in.types';
