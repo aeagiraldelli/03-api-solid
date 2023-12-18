@@ -1,6 +1,7 @@
 import { CheckInsRepository } from '@/repositories';
 import { ValidateCheckInUseCaseRequest, ValidateCheckInUseCaseResponse } from './validate-check-in.types';
-import { ResourceNotFoundError } from './errors';
+import { CheckInValidationExpiredError, ResourceNotFoundError } from './errors';
+import dayjs from 'dayjs';
 
 export class ValidateCheckInUseCase {
   constructor(private checkInsRepository: CheckInsRepository) { }
@@ -12,6 +13,11 @@ export class ValidateCheckInUseCase {
 
     if (!checkIn) {
       throw new ResourceNotFoundError();
+    }
+
+    const diffInMinutes = dayjs(new Date()).diff(checkIn.created_at, 'minutes');
+    if (diffInMinutes > 20) {
+      throw new CheckInValidationExpiredError();
     }
 
     checkIn.validated_at = new Date();
