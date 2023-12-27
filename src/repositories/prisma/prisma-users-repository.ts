@@ -11,9 +11,7 @@ export class PrismaUserRepository implements UsersRepository {
 
   async findByEmail(email: string): Promise<User | null> {
     const user = await prisma.user.findUnique({
-      where: {
-        email: email,
-      }
+      where: { email }
     });
 
     return user;
@@ -21,9 +19,7 @@ export class PrismaUserRepository implements UsersRepository {
 
   async findById(id: string): Promise<User | null> {
     const user = await prisma.user.findUnique({
-      where: {
-        id
-      }
+      where: { id }
     });
 
     return user;
