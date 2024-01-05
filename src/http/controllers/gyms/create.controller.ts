@@ -6,12 +6,12 @@ import { makeCreateGymUseCase } from '@/use-case/factories';
 export async function create(request: FastifyRequest, reply: FastifyReply) {
   const createGymSchema = z.object({
     name: z.string(),
-    description: z.string().nullable(),
-    phone: z.string().nullable(),
-    latitude: z.number().refine(value => {
+    description: z.string().nullable().default(''),
+    phone: z.string().nullable().default(''),
+    latitude: z.coerce.number().refine(value => {
       return Math.abs(value) <= 90;
     }),
-    longitude: z.number().refine(value => {
+    longitude: z.coerce.number().refine(value => {
       return Math.abs(value) <= 180;
     })
   });
